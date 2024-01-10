@@ -41,7 +41,7 @@ class TicTac4(var x: Int = 6, var y: Int = 7, var player1: Player = Player("said
     }
 
     private fun win() {
-        TODO("Not yet implemented")
+
     }
 
     fun setPlay(x: Int, y: Int){
@@ -55,63 +55,39 @@ class TicTac4(var x: Int = 6, var y: Int = 7, var player1: Player = Player("said
     fun checkWinner(): StatusTicTac4 {
 
         // Verificar filas y columnas
-/*
-
-        for (i in 0 until 4) {
-            if (gameBoard[i][0] == gameBoard[i][1] && gameBoard[i][1] == gameBoard[i][2] && gameBoard[i][0] != StatusTicTac4.NONE) {
-                return gameBoard[i][0]
-            }
-            if (gameBoard[0][i] == gameBoard[1][i] && gameBoard[1][i] == gameBoard[2][i] && gameBoard[0][i] != StatusTicTac4.NONE) {
-                return gameBoard[0][i]
-            }
-        }
-*/
-
-        //Log.d("Tictac4", "${gameBoard[0].size}")
-
-        for (i in gameBoard.indices) {
-
-            for (j in 0 .. (gameBoard.size-3)){
-
-                if (gameBoard[i][0+j] == gameBoard[i][1+j] &&
-                    gameBoard[i][1+j] == gameBoard[i][2+j] &&
-                    gameBoard[i][2+j] == gameBoard[i][3+j] &&
-                    gameBoard[i][0+j] != StatusTicTac4.NONE) {
-                    return gameBoard[i][0+j]
+        for (i in 0 until 6) {
+            for (j in 0 until 7) {
+                // Filas
+                if (j + 3 < 7 && checkLine(gameBoard[i][j], gameBoard[i][j + 1], gameBoard[i][j + 2], gameBoard[i][j + 3])) {
+                    return gameBoard[i][j]
                 }
-
-            }
-
-        }
-
-        for (i in gameBoard[0].indices){
-
-            for (j in 0 until (gameBoard[0].size-4)){
-
-                if (gameBoard[0+j][i] == gameBoard[1+j][i] &&
-                    gameBoard[1+j][i] == gameBoard[2+j][i] &&
-                    gameBoard[2+j][i] == gameBoard[3+j][i] &&
-                    gameBoard[0+j][i] != StatusTicTac4.NONE
-                ) {
-
-                    return gameBoard[0+j][i]
+                // Columnas
+                if (i + 3 < 6 && checkLine(gameBoard[i][j], gameBoard[i + 1][j], gameBoard[i + 2][j], gameBoard[i + 3][j])) {
+                    return gameBoard[i][j]
                 }
-
+                // Diagonales \
+                if (i + 3 < 6 && j + 3 < 7 && checkLine(gameBoard[i][j], gameBoard[i + 1][j + 1], gameBoard[i + 2][j + 2], gameBoard[i + 3][j + 3])) {
+                    return gameBoard[i][j]
+                }
+                // Diagonales /
+                if (i + 3 < 6 && j - 3 >= 0 && checkLine(gameBoard[i][j], gameBoard[i + 1][j - 1], gameBoard[i + 2][j - 2], gameBoard[i + 3][j - 3])) {
+                    return gameBoard[i][j]
+                }
             }
-
         }
 
         // Verificar empate
-        for (row in gameBoard) {
-            for (cell in row) {
-                if (cell == StatusTicTac4.NONE) {
-                    return StatusTicTac4.NONE
-                }
-            }
+        if (gameBoard.any { row -> row.any { cell -> cell == StatusTicTac4.NONE } }) {
+            return StatusTicTac4.NONE
         }
 
         return StatusTicTac4.EMPATE // Empate
     }
+
+    fun checkLine(vararg cells: StatusTicTac4): Boolean {
+        return cells.all { it != StatusTicTac4.NONE && it == cells[0] }
+    }
+
 
 }
 
