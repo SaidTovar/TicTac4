@@ -12,9 +12,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.airbnb.lottie.L
-import com.tovars.conecta4.Screens.ScreenMainMenu
-import com.tovars.conecta4.Screens.ScreenPlay
+import com.tovars.conecta4.ViewModels.TicTac4ViewModel
+import com.tovars.conecta4.ui.screens.ScreenPlay
 import com.tovars.conecta4.ui.theme.Conecta4Theme
 
 class MainActivity : ComponentActivity() {
@@ -40,7 +39,7 @@ class MainActivity : ComponentActivity() {
                     //Greeting("Android")
 
                     //ScreenMainMenu { playstarmusic() }
-                    ScreenPlay()
+                    ScreenPlay(TicTac4ViewModel())
                 }
             }
         }

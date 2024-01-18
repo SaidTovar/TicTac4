@@ -1,4 +1,4 @@
-package com.tovars.conecta4.Screens
+package com.tovars.conecta4.ui.screens
 
 
 import androidx.compose.animation.AnimatedContent

@@ -1,6 +1,10 @@
-package com.tovars.conecta4.Screens
+package com.tovars.conecta4.ui.screens
 
 import android.util.Log
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,9 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,14 +20,18 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,10 +43,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tovars.conecta4.R
-import com.tovars.conecta4.TicTac4
+import com.tovars.conecta4.Models.StatusTicTac4
+import com.tovars.conecta4.Models.TicTac4
+import com.tovars.conecta4.ViewModels.TicTac4ViewModel
+import kotlinx.coroutines.delay
+
 
 @Composable
-fun ScreenPlay() {
+fun ScreenPlay(ticTac4ViewModel: TicTac4ViewModel) {
+
+    //val temp: Float by controliotViewModel.temp.collectAsState()
 
 
 
@@ -92,7 +104,7 @@ fun ScreenPlay() {
 
             Spacer(modifier = Modifier.height(30.dp))
 
-            TableComposable()
+            TableComposable(ticTac4ViewModel)
 
         }
 
@@ -102,13 +114,15 @@ fun ScreenPlay() {
 
 
 @Composable
-fun TableComposable() {
+fun TableComposable(ticTac4ViewModel: TicTac4ViewModel) {
 
-    val matriz: MutableList<MutableList<Int>> = MutableList(5) { MutableList(6) { 0 } }
+    val ticTac4 by ticTac4ViewModel.ticTac4.collectAsState()
 
-    var starvisibility by remember { mutableStateOf(false) }
+    val starvisibility by ticTac4ViewModel.starvisibility.collectAsState()
 
-    var ticTac4 by remember { mutableStateOf(TicTac4(winplayer = {starvisibility = !starvisibility})) }
+    val counter by ticTac4ViewModel.counter.collectAsState()
+
+    val colorplayer by ticTac4ViewModel.currentPlayerColor.collectAsState()
 
     Box(
         modifier = Modifier
@@ -122,21 +136,30 @@ fun TableComposable() {
                 .padding(4.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Text(text = "$counter", color = Color.Black)
 
             Column (modifier = Modifier
                 .clip(shape = RoundedCornerShape(16.dp))
 
             ){
 
-                repeat(6) { rowIndex ->
+                repeat(ticTac4.gameBoard.size) { rowIndex ->
                     // Crear celdas en cada fila
                     Row(
                         modifier = Modifier
                             .height(46.dp) // Altura de cada fila
 
                     ) {
-                        repeat(7) { columnIndex ->
+                        repeat(ticTac4.gameBoard.first().size) { columnIndex ->
                             // Contenido de la celda (círculo centrado)
+
+                            val colorpres by animateColorAsState(targetValue =  if (ticTac4.gameBoard[rowIndex][columnIndex] == StatusTicTac4.NONE)
+                                Color.LightGray
+                            else
+                                colorplayer,
+                                label = "", animationSpec = tween(1000)
+                            )
+
                             Box(
                                 modifier = Modifier
                                     .width(46.dp) // Ancho de cada celda
@@ -145,27 +168,22 @@ fun TableComposable() {
                                 contentAlignment = Alignment.Center
                             ) {
 
-                                // Círculo centrado
-                                var isEnableFicha by remember { mutableStateOf(false) }
-
                                 Box(
                                     modifier = Modifier
                                         .size(30.dp)
                                         .clip(CircleShape)
-                                        .background(if (isEnableFicha) ticTac4.player1.playerColor else Color.LightGray)
+                                        .background(
+                                            colorpres
+                                        )
                                         .clickable {
-                                            isEnableFicha = !isEnableFicha
-                                            Log.v(
-                                                "Button cuadricula",
-                                                "Celda $rowIndex-$columnIndex"
-                                            )
 
-                                            ticTac4.setPlay(rowIndex, columnIndex)
+                                            ticTac4ViewModel.setPlay(rowIndex, columnIndex)
 
                                         },
                                     contentAlignment = Alignment.Center
                                 ) {
                                     // Contenido adicional si es necesario
+
                                 }
 
 
@@ -178,7 +196,7 @@ fun TableComposable() {
             
             Spacer(modifier = Modifier.height(30.dp))
 
-            Button(onClick = {  }, colors = ButtonDefaults.buttonColors(Color(0xFF367BD1))
+            Button(onClick = { ticTac4ViewModel.contar()  }, colors = ButtonDefaults.buttonColors(Color(0xFF367BD1))
             ) {
 
                 Text(text = "TURNO", color = Color.White)

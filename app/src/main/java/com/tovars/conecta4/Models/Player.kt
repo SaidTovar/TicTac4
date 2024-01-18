@@ -1,4 +1,4 @@
-package com.tovars.conecta4
+package com.tovars.conecta4.Models
 
 import androidx.compose.ui.graphics.Color
 
