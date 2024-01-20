@@ -28,6 +28,8 @@ data class TicTac4(var x: Int = 6, var y: Int = 7,
             }
             StatusTicTac4.PLAYER2 -> {
 
+                winplayer()
+
             }
             StatusTicTac4.EMPATE -> {
 
@@ -45,21 +47,44 @@ data class TicTac4(var x: Int = 6, var y: Int = 7,
 
     }
 
-    fun setPlay(x: Int, y: Int){
+    fun setPlay(x: Int, y: Int): Int{
 
+        val aux = compruebaEspacio(y)
 
-        if (compruebaEspacio(y)){
+        when (aux){
 
-            //gameBoard[x][y] = StatusTicTac4.PLAYER1 //asignar en donde haya espacio, en la parte mas baja de la columna
+            -1 ->{
+                //No hay espacio
+            }
+            else ->{
+                gameBoard[aux][y] = currentPlayer
+            }
+
 
         }
 
-        compruebaWin()
 
+        compruebaWin()
+        switchPlayer()
+
+        return aux
+    }
+
+    fun switchPlayer() {
+
+        if (currentPlayer == StatusTicTac4.PLAYER1){
+
+            currentPlayer = StatusTicTac4.PLAYER2
+
+        }else{
+
+            currentPlayer = StatusTicTac4.PLAYER1
+
+        }
 
     }
 
-    fun compruebaEspacio(column: Int): Boolean{
+    fun compruebaEspacio(column: Int): Int{
 
         val rows = gameBoard.size
 
@@ -69,15 +94,17 @@ data class TicTac4(var x: Int = 6, var y: Int = 7,
 
                 Log.d("Tictac4", "Hay espacio disponible en ${j}x${column}")
 
-                gameBoard[rows - 1 - j][column] = StatusTicTac4.PLAYER1
+                //gameBoard[rows - 1 - j][column] = StatusTicTac4.PLAYER1
 
-                return true
+                return rows - 1 - j
 
             }
 
         }
 
-        return false
+        Log.d("Tictac4", "No hay espacio")
+
+        return -1
 
     }
 

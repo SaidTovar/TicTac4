@@ -122,7 +122,7 @@ fun TableComposable(ticTac4ViewModel: TicTac4ViewModel) {
 
     val counter by ticTac4ViewModel.counter.collectAsState()
 
-    val colorplayer by ticTac4ViewModel.currentPlayerColor.collectAsState()
+    val boardColors = ticTac4ViewModel.listColors
 
     Box(
         modifier = Modifier
@@ -153,10 +153,7 @@ fun TableComposable(ticTac4ViewModel: TicTac4ViewModel) {
                         repeat(ticTac4.gameBoard.first().size) { columnIndex ->
                             // Contenido de la celda (círculo centrado)
 
-                            val colorpres by animateColorAsState(targetValue =  if (ticTac4.gameBoard[rowIndex][columnIndex] == StatusTicTac4.NONE)
-                                Color.LightGray
-                            else
-                                colorplayer,
+                            val colorpres by animateColorAsState(targetValue =  boardColors[rowIndex][columnIndex],
                                 label = "", animationSpec = tween(1000)
                             )
 
