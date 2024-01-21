@@ -153,7 +153,7 @@ fun TableComposable(ticTac4ViewModel: TicTac4ViewModel) {
                         repeat(ticTac4.gameBoard.first().size) { columnIndex ->
                             // Contenido de la celda (círculo centrado)
 
-                            val colorpres by animateColorAsState(targetValue =  boardColors[rowIndex][columnIndex],
+                            val colorpres by animateColorAsState(targetValue =  boardColors[rowIndex][columnIndex].collectAsState().value,
                                 label = "", animationSpec = tween(1000)
                             )
 

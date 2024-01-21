@@ -1,13 +1,17 @@
 package com.tovars.conecta4.ViewModels
 
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.tovars.conecta4.Models.StatusTicTac4
 import com.tovars.conecta4.Models.TicTac4
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.runBlocking
 
@@ -33,9 +37,13 @@ class TicTac4ViewModel: ViewModel() {
 
     private var currentPlayerColor = Color.Green
 
-    private val _listColors = mutableStateListOf<MutableList<Color>>()
-    val listColors: List<List<Color>> = _listColors
+    //private val _listColors = MutableStateFlow( MutableList(6){MutableList(7){Color.White} } )
+    //val listColors  = _listColors.asStateFlow()
 
+    private val _listColors = MutableList(6){MutableList(7){ MutableStateFlow<Color>(Color.White)}}
+    val listColors: List<List<StateFlow<Color>>> = _listColors
+
+    /*
     init {
 
         _ticTac4.value.gameBoard.forEach {
@@ -75,6 +83,7 @@ class TicTac4ViewModel: ViewModel() {
         }
 
     }
+     */
 
     fun contar(){
         _counter.value++
@@ -101,7 +110,12 @@ class TicTac4ViewModel: ViewModel() {
         }
 
         if(aux != -1){
-            _listColors[aux][columnIndex] = currentPlayerColor
+            //_listColors.value[aux][columnIndex] = currentPlayerColor
+
+            _listColors[aux][columnIndex].value = currentPlayerColor
+
+        // hay que asignar el valor completo, un alternativa seria usar la variable _gameBoard
+                                // en vez de esta, ya que es mas facil asignar un nuevo estado copiandolo y desde la vista solo dependiendo el estado este cambie de color asi como el codigo de TODOAPP
 
             //_listColors.get(aux).set(columnIndex, currentPlayerColor)
         }
