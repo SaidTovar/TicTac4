@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
                     //Greeting("Android")
 
                     //ScreenMainMenu { playstarmusic() }
-                    ScreenPlay(TicTac4ViewModel())
+                    ScreenPlay(TicTac4ViewModel()) { playstarmusic() }
                 }
             }
         }
