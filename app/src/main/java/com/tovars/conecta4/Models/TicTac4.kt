@@ -13,6 +13,8 @@ data class TicTac4(var x: Int = 6, var y: Int = 7,
 
     val gameBoard = Array(x) { Array(y){ StatusTicTac4.NONE } }
 
+    val gameBoardWin = Array(x) { Array(y){ StatusTicTac4.NONE } }
+
     var currentStatusTicTac4 = StatusTicTac4.NONE
 
     fun compruebaWin(){
@@ -115,20 +117,45 @@ data class TicTac4(var x: Int = 6, var y: Int = 7,
 
         for (i in 0 until rows) {
             for (j in 0 until cols) {
-                // Filas
+                // Filas -
                 if (j + 3 < cols && checkLine(*Array(4) { gameBoard[i][j + it] })) {
+
+                    //gameBoardWin[i][j] = gameBoard[i][j]
+                    //gameBoardWin[i][j+1] = gameBoard[i][j]
+                    //gameBoardWin[i][j+2] = gameBoard[i][j]
+                    //gameBoardWin[i][j+3] = gameBoard[i][j]
+
+                    for (offset in 0 until 4) {
+                        gameBoardWin[i][j + offset] = gameBoard[i][j]
+                    }
+
                     return gameBoard[i][j]
                 }
-                // Columnas
+                // Columnas |
                 if (i + 3 < rows && checkLine(*Array(4) { gameBoard[i + it][j] })) {
+
+                    for (offset in 0 until 4) {
+                        gameBoardWin[i + offset][j] = gameBoard[i][j]
+                    }
+
                     return gameBoard[i][j]
                 }
                 // Diagonales \
                 if (i + 3 < rows && j + 3 < cols && checkLine(*Array(4) { gameBoard[i + it][j + it] })) {
+
+                    for (offset in 0 until 4) {
+                        gameBoardWin[i + offset][j + offset] = gameBoard[i][j]
+                    }
+
                     return gameBoard[i][j]
                 }
                 // Diagonales /
                 if (i + 3 < rows && j - 3 >= 0 && checkLine(*Array(4) { gameBoard[i + it][j - it] })) {
+
+                    for (offset in 0 until 4) {
+                        gameBoardWin[i + offset][j - offset] = gameBoard[i][j]
+                    }
+
                     return gameBoard[i][j]
                 }
             }
